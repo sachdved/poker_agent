@@ -65,6 +65,7 @@ class PolicyModel(torch.nn.Module):
         stack_size_hidden_dims : typing.List[int],
         card_embeddings_hidden_dims : typing.List[int],
         final_output_hidden_dims : typing.List[int],
+        value_output_hidden_dims : typing.List[int],
         num_actions : int = 21,  # fold, check/call, bet/raise small, bet/raise large
         card_embedding_dim : int = 2048,
         dropout_rate : float = 0.1,
@@ -161,6 +162,16 @@ class PolicyModel(torch.nn.Module):
             prev_dim = hidden_dim
         final_output_layers.append(torch.nn.Linear(prev_dim, num_actions))
         self.final_output_net = torch.nn.Sequential(*final_output_layers).to(self.device)
+
+        final_output_layers = []
+        prev_dim = 5 * 2048
+        for hidden_dim in value_output_hidden_dims:
+            final_output_layers.append(torch.nn.Linear(prev_dim, hidden_dim))
+            final_output_layers.append(torch.nn.ReLU())
+            final_output_layers.append(torch.nn.Dropout(dropout_rate))
+            prev_dim = hidden_dim
+        final_output_layers.append(torch.nn.Linear(prev_dim, 1))
+        self.value_output_net = torch.nn.Sequential(*final_output_layers).to(self.device)
         
     def forward(
         self, 
@@ -220,8 +231,9 @@ class PolicyModel(torch.nn.Module):
         
         # Generate action logits
         logits = self.final_output_net(combined)  # (batch_size, num_actions)
+        value_pred = self.value_output_net(combined)
         
-        return logits
+        return logits, value_pred
     
     def get_action_probs(
         self,

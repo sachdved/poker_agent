@@ -689,6 +689,31 @@ class PokerActionValidator:
         
         return None
 
+def get_min_bet_size_or_raise_size(
+    pot_size_sequence,
+    street_idxs,
+    action_idxs,
+    current_street,
+):
+    """
+    Gets the minimum bet or raise size allowed in a position.
+    Minimum allowable bet size is going to be 1 big blind or quarter pot.
+    Minimum allowable raise size will be 1 big blinds or 1x the most recent increment, resulting in a bet size
+    of either 2bb or 2 times the last increment.
+    """
+    
+    current_street_idxs = street_idxs[street_idxs == current_street]
+
+    if len(current_street_idxs) == 0:
+        return max(2, max(pot_size_sequence)/4)
+
+    current_street_actions = action_idxs[street_idxs == current_street]
+
+    if ((current_street_actions == 3).int() + (current_street_actions == 2).int()).sum() != current_street_actions.shape[0]:
+        where_max = torch.where(pot_size_sequence == max(pot_size_sequence[0]))
+        raise_size = pot_size_sequence[where_max[0][0], where_max[1][0]] - pot_size_sequence[where_max[0][0], where_max[1][0] - 1]
+        return max([4, 2*raise_size])
+
 class Player():
     """
     Encodes the player's current state.

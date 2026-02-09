@@ -119,7 +119,7 @@ class PokerAgent(torch.nn.Module):
         
         model_inputs['llm_state'] = activations_last_action
         model_inputs['self_position'] = self_position_idx
-        model_inputs['probits'] = self.policy_model(
+        model_inputs['probits'], model_inputs['value_pred'] = self.policy_model(
                 model_inputs['self_position'],
                 model_inputs['active_players'],
                 model_inputs['stack_size'],
