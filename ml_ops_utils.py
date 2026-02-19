@@ -1,6 +1,10 @@
 import torch
 
 def print_gpu_memory(label=""):
+    """
+    Just used for tracking how much memory is being used on GPU.
+    Allocated vs Reserved is favorable.
+    """
     if torch.cuda.is_available():
         allocated = torch.cuda.memory_allocated() / 1e9
         reserved = torch.cuda.memory_reserved() / 1e9

@@ -99,8 +99,7 @@ class PokerAgent(torch.nn.Module):
         
         try:
             inputs_embeds = self.poker_sequence_embedder(model_inputs).to(device="cuda", dtype=torch.bfloat16)
-            with torch.no_grad():
-                outputs = self.llm(inputs_embeds=inputs_embeds, attention_mask=model_inputs['attention_mask'])
+            outputs = self.llm(inputs_embeds=inputs_embeds, attention_mask=model_inputs['attention_mask'])
             
         finally:
             handle.remove()

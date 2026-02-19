@@ -705,7 +705,7 @@ def get_min_bet_size_or_raise_size(
     current_street_idxs = street_idxs[street_idxs == current_street]
 
     if len(current_street_idxs) == 0:
-        return max(2, max(pot_size_sequence)/4)
+        return max(2, max(pot_size_sequence.unique())/4)
 
     current_street_actions = action_idxs[street_idxs == current_street]
 

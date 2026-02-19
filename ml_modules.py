@@ -220,6 +220,7 @@ class PolicyModel(torch.nn.Module):
             card_emb = self.card_sum_net(summed_cards)  # (batch_size, 2048)
         
         # Concatenate all embeddings
+        
 
         combined = torch.cat([
             self_position_embed,
