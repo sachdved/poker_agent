@@ -9,14 +9,6 @@ from sequence_modules import *
 from utils import *
 import gc
 
-curr_street_index = 2
-curr_batch_index = 1
-END_OF_HAND_TOKEN_ACTIONS = 20
-END_OF_HAND_TOKEN_STREETS = 5
-
-END_OF_STREET_TOKEN_ACTIONS = 19
-END_OF_STREET_TOKEN_STREETS = 4
-
 def simulate_hand(
     num_players : int,
     street_idxs : torch.Tensor,
@@ -75,6 +67,7 @@ def simulate_hand(
         )
         
         next_to_act = who_is_acting[[curr_batch_index-1]]
+        print(str(next_to_act.item()) + ' is the next to act')
         legal_actions = legal_actions[curr_batch_index-1]
         
         if legal_actions[ -1] == True:
@@ -255,11 +248,11 @@ def simulate_hand(
         curr_batch_index += 1
 
     return (
-        street_idxs[:curr_batch_index+1], 
-        table_position_idxs[:curr_batch_index+1], 
-        action_idxs[:curr_batch_index+1], 
-        pot_size_sequence[:curr_batch_index+1], 
-        active_players[:curr_batch_index+1], 
-        stack_size[:curr_batch_index+1],
+        street_idxs[:curr_batch_index], 
+        table_position_idxs[:curr_batch_index], 
+        action_idxs[:curr_batch_index], 
+        pot_size_sequence[:curr_batch_index], 
+        active_players[:curr_batch_index], 
+        stack_size[:curr_batch_index],
         table
     )
