@@ -36,20 +36,20 @@ def simulate_hand(
 
     while not end_of_hand_happened:
 
-        print(f"after action {curr_street_index} \n\n")
+        #print(f"after action {curr_street_index} \n\n")
     
-        print(curr_street_index)
-        print(curr_batch_index)
+        #print(curr_street_index)
+        #print(curr_batch_index)
 
-        print(action_idxs[curr_batch_index, :curr_street_index])
-        print(pot_size_sequence[curr_batch_index, :curr_street_index])
-        print(table_position_idxs[curr_batch_index, :curr_street_index])
-        print(street_idxs[curr_batch_index, :curr_street_index])
+        #print(action_idxs[curr_batch_index, :curr_street_index])
+        #print(pot_size_sequence[curr_batch_index, :curr_street_index])
+        #print(table_position_idxs[curr_batch_index, :curr_street_index])
+        #print(street_idxs[curr_batch_index, :curr_street_index])
         
-        print(stack_size[curr_batch_index])
-        print(active_players[curr_batch_index])
+        #print(stack_size[curr_batch_index])
+        #print(active_players[curr_batch_index])
         
-        print("\n \n")
+        #print("\n \n")
         
         legal_actions = action_validator.get_legal_actions_mask(
             street_idxs,
@@ -67,7 +67,7 @@ def simulate_hand(
         )
         
         next_to_act = who_is_acting[[curr_batch_index-1]]
-        print(str(next_to_act.item()) + ' is the next to act')
+        #print(str(next_to_act.item()) + ' is the next to act')
         legal_actions = legal_actions[curr_batch_index-1]
         
         if legal_actions[ -1] == True:
@@ -143,10 +143,10 @@ def simulate_hand(
                 active_players.to('cuda')[[curr_batch_index]],
                 stack_size.to('cuda')[[curr_batch_index]]
             )
-        
-            sampled_action = torch.distributions.Categorical(
-                softmax_prob(outputs['probits'] - 1e9 * ((~legal_actions).float()).to('cuda'))
-            ).sample()
+
+            #print(outputs['probits'])
+            masked_logits = outputs['probits'].masked_fill(~legal_actions.to('cuda'), float('-inf'))
+            sampled_action = torch.distributions.Categorical(softmax_prob(masked_logits)).sample()
     
             if street_idxs[curr_batch_index, curr_street_index - 1]!=4:
                 current_street = street_idxs[curr_batch_index, curr_street_index - 1] 
@@ -170,8 +170,8 @@ def simulate_hand(
                 
                 my_stack_size = stack_size[curr_batch_index, position.int().to('cpu')].squeeze()
 
-                print(min_size)
-                print(my_stack_size)
+                #print(min_size)
+                #print(my_stack_size)
                 
                 multiplicative_factor = (my_stack_size / min(min_size, my_stack_size)) ** (1/(spacing-1))
                 

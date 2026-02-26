@@ -714,6 +714,10 @@ def get_min_bet_size_or_raise_size(
         raise_size = pot_size_sequence[where_max[0][0], where_max[1][0]] - pot_size_sequence[where_max[0][0], where_max[1][0] - 1]
         return max([4, 2*raise_size])
 
+    else:
+        ## checked through, min bet is a quarter pot.
+        return max(2, max(pot_size_sequence.unique())/4)
+
 class Player():
     """
     Encodes the player's current state.
