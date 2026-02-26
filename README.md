@@ -33,11 +33,11 @@ This project explores training language models to excel at strategic decision-ma
 
 ### Self-Play Reinforcement Learning
 
-The model learns through self-play using an advantage-based policy gradient approach:
+The model learns through self-play using a GRPO framework:
 
-1. **Rollout Phase**: Multiple agents play complete poker hands against each other
+1. **Rollout Phase**: Multiple agents play complete poker hands against each other (starting from the same deck configuration).
 2. **Reward Calculation**: Based on final chip stack at hand end
-3. **Advantage Estimation**: Compute advantages across rollouts to measure performance relative to average
+3. **Advantage Estimation**: Within each group of rollouts sharing the same deck configuration, advantages are normalized relative to the group mean reward, following the GRPO framework and eliminating the need for a separate value network
 4. **Policy Update**: Update policy using gradient ascent on advantage-weighted log probabilities
 
 ### Key Features
@@ -138,7 +138,7 @@ The policy model outputs probabilities over 21 possible actions:
 ### Neural Network Architecture
 
 - **LLM Layer**: Qwen3 (28 layers, 2048 hidden dimensions)
-- **Hook Point**: Uses layer 27's post-attention layer for activation extraction
+- **Hook Point**: Uses layer 27's post-attention layer for activation extraction. Other layers to be explored.
 - **Policy Network**: Multi-layer MLP with [1024, 2048, 512, 256] hidden dimensions
 
 ### Training Hyperparameters
@@ -162,9 +162,16 @@ The central hypothesis of this project is that **pre-trained language models alr
 
 3. **Scalability to Complex Games**: This approach scales better than tree-based methods, as the LLM can generalize to novel situations without needing exhaustive training on all possible game states
 
-4. **Self-Play without Equilibrium**: Unlike CFR which converges to Nash equilibrium, this approach allows the model to learn through self-interaction and competition, potentially discovering better-than-equilibrium strategies
+4. **Self-Play without Equilibrium**: Unlike CFR which converges to Nash equilibrium, this approach allows the model to learn through self-interaction and competition, potentially more rapidly learning exploitative strategies against non-equilibrium opponents.
 
-This demonstrates that **LLMs can serve as powerful strategic learners** when combined with RL, bypassing the need for explicit game-theoretic computation.
+   
+## Preliminary Results
+
+Early training runs show the agent adapts to trivial cases 
+(e.g., folding clearly losing hands) within 20-30 hands, 
+suggesting the LLM embeddings provide a useful prior for 
+strategic reasoning. Evaluation against Nash equilibrium 
+baselines is ongoing.
 
 ## Potential Applications
 
