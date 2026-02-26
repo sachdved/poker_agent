@@ -1,1 +1,47 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# IPython
+*.ipynb_checkpoints
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Models (large files)
 models/
+*.pth
+*.bin
+*.safetensors
+*.pt
+*.ckpt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+*.swp
+*.swo
+*~
